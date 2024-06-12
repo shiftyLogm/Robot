@@ -1,6 +1,6 @@
 #include <Servo.h> // Biblioteca para manuseio do Motor Servo
-#include <AFMotor.h> // Biblioteca para manuseio do Shield Motor
 #include <Ultrasonic.h> // Biblioteca para manuseio do Sensor Ultrassônico
+#include <L298N.h> // Biblioteca para manuseio da Ponte H
 
 // Definições dos pinos que serão usados
 #define PIN_SERVO1
@@ -11,6 +11,14 @@
 #define ENERGY_PIN 
 #define TRIGGER
 #define ECHO
+#define IN1 A1
+#define IN2 A2
+#define ENA A0
+#define IN3 A3
+#define IN4 A4
+#define ENB A5
+#define PIN_IFSENSOR1 12
+#define PIN_IFSENSOR2 13
 
 Servo gripper_Servo1;
 Servo gripper_Servo2;
@@ -18,21 +26,29 @@ int Read_IFSensor1;
 int Read_IFSensor2;
 int UltSensor_Distance; // Variável que receberá a atual distância em centímetros do objeto detectado pelo Sensor Utrassônico
 
-AF_DCMotor Dc_Motor1(1); // Definindo pino de entrada para o motor, no caso M1
-AF_DCMotor Dc_Motor2(4);
+L298N motor1(ENA, IN1, IN2);
+L298N motor2(ENB, IN3, IN4);
 Ultrasonic SensorUltra(TRIGGER, ECHO); // Definindo os pinos de entrada de Trigger e Echo do Ultrassônico
+
+bool ReadSensor1;
+bool ReadSensor2;
 
 void setup(){
 
   pinMode(PIN_IFSENSOR1, INPUT); // Definindo pino do sensor como input
   pinMode(PIN_IFSENSOR2, INPUT);
   pinMode(ENERGY_PIN, OUTPUT); // Definindo a entrada do pino de energia
+  pinMode(7, OUTPUT);
   
   gripper_Servo1.attach(PIN_IFSERVO1); // Atribuindo energia ao pino do servo
   gripper_Servo2.attach(PIN_IFSERVO2);
 
-  Dc_Motor1.setSpeed(200); // Definindo velocidade do Motor
-  Dc_Motor2.setSpeed(200); 
+  // Definindo velocidade do Motor
+  motor1.setSpeed(150);
+  motor2.setSpeed(150);
+
+  
+  
   Dc_Motor1.run(FORWARD); // Definindo a direção para frente (Isso também liga o motor)
   Dc_Motor2.run(FORWARD);
   
@@ -45,18 +61,12 @@ void loop(){
   Read_IFSensor1 = digitalRead(PIN_IFSENSOR1); // Variável que armazena o atual valor do sensor IF em loop
   Read_IFSensor2 = digitalRead(PIN_IFSENSOR2);
 
-  if(Read_IFSensor1 == HIGH && Read_IFSensor2 == HIGH){
-    delay(500);
-    Dc_Motor1.run(BACKWARD);
-    Dc_Motor2.run(BACKWARD);
-  }
+  digitalWrite(7, HIGH);
+  ReadSensor1 = digitalRead(PIN_IFSENSOR1) == HIGH ? true : false;
+  ReadSensor2 = digitalRead(PIN_IFSENSOR2) == HIGH ? true : false;
   
-  Dc_Motor1.setSpeed(200); // Definindo velocidade do Motor
-  Dc_Motor2.setSpeed(200); 
-  Dc_Motor1.run(FORWARD); // Definindo a direção para a frente
-  Dc_Motor2.run(FORWARD);
-  Dc_Motor1.run(BACKWARD); // Definindo a direção para trás
-  Dc_Motor2.run(BACKWARD); // motor.run(RELEASE) => Desliga o motor    
+  ReadSensor1 ? motor1.forward() : motor1.stop();
+  ReadSensor2 ? motor2.forward() : motor2.stop(); 
 
   // Possível lógica
 
