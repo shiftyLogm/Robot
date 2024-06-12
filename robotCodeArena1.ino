@@ -3,17 +3,17 @@
 #include <Ultrasonic.h> // Biblioteca para manuseio do Sensor Ultrassônico
 
 // Definições dos pinos que serão usados
-#define PINSERVO1
-#define PINSERVO2
+#define PIN_SERVO1
+#define PIN_SERVO2
 #define PIN_IFSENSOR1
 #define PIN_IFSENSOR2
-#define PINLED
-#define ENERGYPIN 
+#define PIN_LED
+#define ENERGY_PIN 
 #define TRIGGER
 #define ECHO
 
-Servo gripperServo1;
-Servo gripperServo2;
+Servo gripper_Servo1;
+Servo gripper_Servo2;
 int Read_IFSensor1;
 int Read_IFSensor2;
 int UltSensor_Distance; // Variável que receberá a atual distância em centímetros do objeto detectado pelo Sensor Utrassônico
