@@ -26,10 +26,10 @@ void setup(){
 
   pinMode(PIN_IFSENSOR1, INPUT); // Definindo pino do sensor como input
   pinMode(PIN_IFSENSOR2, INPUT);
-  pinMode(ENERGYPIN, OUTPUT); // Definindo a entrada do pino de energia
+  pinMode(ENERGY_PIN, OUTPUT); // Definindo a entrada do pino de energia
   
-  gripperServo1.attach(PIN_IFSERVO1); // Atribuindo energia ao pino do servo
-  gripperServo2.attach(PIN_IFSERVO2);
+  gripper_Servo1.attach(PIN_IFSERVO1); // Atribuindo energia ao pino do servo
+  gripper_Servo2.attach(PIN_IFSERVO2);
 
   Dc_Motor1.setSpeed(200); // Definindo velocidade do Motor
   Dc_Motor2.setSpeed(200); 
@@ -41,7 +41,7 @@ void setup(){
 void loop(){
 
   UltSensor_Distance = SensorUltra.read(CM); // Passará a distância em centímetros do objecto detectado pelo Sensor
-  digitalWrite(ENERGYPIN, HIGH); // Atribuindo energia ao pino
+  digitalWrite(ENERGY_PIN, HIGH); // Atribuindo energia ao pino
   Read_IFSensor1 = digitalRead(PIN_IFSENSOR1); // Variável que armazena o atual valor do sensor IF em loop
   Read_IFSensor2 = digitalRead(PIN_IFSENSOR2);
 
@@ -50,11 +50,7 @@ void loop(){
     Dc_Motor1.run(BACKWARD);
     Dc_Motor2.run(BACKWARD);
   }
-
-  else{
-    // Método para caso seja falso
-  }
-
+  
   Dc_Motor1.setSpeed(200); // Definindo velocidade do Motor
   Dc_Motor2.setSpeed(200); 
   Dc_Motor1.run(FORWARD); // Definindo a direção para a frente
