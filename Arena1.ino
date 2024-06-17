@@ -1,25 +1,24 @@
-#include <L298NX2.h>
-
 // Pinos dos Motores
-#define IN1 3
-#define IN2 5
-#define IN3 6
-#define IN4 9
-#define ENA 10
-#define ENB 11
+#define pinMot1A 5
+#define pinMot1B 6
+#define pinMot2A 9
+#define pinMot2B 10
 
-// Objeto para manuseio dos 2 motores na Ponte H
-L298NX2 Dc_Motors(ENA, IN1, IN2, ENB, IN3, IN4);
 
-void setup() {
+void setup(){
 
-  Dc_Motors.setSpeedA(80); // Motor 1 recebendo velocidade específica
-  Dc_Motors.setSpeedB(200); // Motor 2 recebendo velocidade específica
+  // Definindo pinos dos motores como OUTPUT
+  pinMode(pinMot1A, OUTPUT); 
+  pinMode(pinMot1B, OUTPUT);
+  pinMode(pinMot2A, OUTPUT);
+  pinMode(pinMot2B, OUTPUT);
 
 }
 
-void loop() {
+void loop(){
 
-  Dc_Motors.forward(); // Define a direção frente para os motores seguirem
-
+  // Colocando valor específico de energia para os motores
+  analogWrite(pinMot1A, 80);
+  analogWrite(pinMot2A, 80);
+  
 }
