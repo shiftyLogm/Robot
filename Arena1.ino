@@ -4,7 +4,6 @@
 #define pinMot2A 9
 #define pinMot2B 10
 
-
 void setup(){
 
   // Definindo pinos dos motores como OUTPUT
