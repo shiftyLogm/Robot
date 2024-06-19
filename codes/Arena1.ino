@@ -26,12 +26,12 @@ class DCMotor {
     }
 
     void Forward() {
-        analogWrite(_pin1, speed);
+        analogWrite(_pin1, _speed);
         digitalWrite(_pin2, LOW);
     }
 
     void Backward() {
-        analogWrite(_pin2, speed);
+        analogWrite(_pin2, _speed);
         digitalWrite(_pin1, LOW);
     }
 
