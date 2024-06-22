@@ -1,12 +1,16 @@
-#define PIN_MOTOR1A 5
-#define PIN_MOTOR1B 6
-#define PIN_MOTOR2A 10
-#define PIN_MOTOR2B 11
-#define PIN_IFSENSOR1 7
-#define PIN_IFSENSOR2 8
+#define PIN_MOTOR_1A 10
+#define PIN_MOTOR_1B 11
+#define PIN_MOTOR_2A 5
+#define PIN_MOTOR_2B 6
+#define PIN_IFSENSOR_1 7
+#define PIN_IFSENSOR_2 8
+#define PIN_IFSENSOR_3 
+#define PIN_IFSENSOR_4 
 
-bool ReadSensor1;
-bool ReadSensor2;
+bool ReadSensor_1;
+bool ReadSensor_2;
+bool ReadSensor_3;
+bool ReadSensor_4;
 
 class DCMotor {
   public:
@@ -44,32 +48,48 @@ class DCMotor {
         return _speed;
     }
 
+
   private:
     uint8_t _pin1;
     uint8_t _pin2;
     int _speed;
 };
 
-DCMotor motor1(PIN_MOTOR1A, PIN_MOTOR1B);
-DCMotor motor2(PIN_MOTOR2A, PIN_MOTOR2B);
+DCMotor Motor_1(PIN_MOTOR_1A, PIN_MOTOR_1B);
+DCMotor Motor_2(PIN_MOTOR_2A, PIN_MOTOR_2B);
+
+void turnLeft() {
+  Motor_1.Stop();
+  Motor_2.Forward();
+}
+
+void turnRight() {
+  Motor_1.Forward();
+  Motor_2.Stop();
+}
 
 void setup() {
   
-  motor1.begin();
-  motor2.begin();
-  pinMode(PIN_IFSENSOR1, INPUT);
-  pinMode(PIN_IFSENSOR2, INPUT);
-  motor1.setSpeed(80);
-  motor2.setSpeed(80);
+  Motor_1.begin();
+  Motor_2.begin();
+  pinMode(PIN_IFSENSOR_1, INPUT);
+  pinMode(PIN_IFSENSOR_2, INPUT);
+  Motor_1.setSpeed(100);
+  Motor_2.setSpeed(100);
 
 }
 
 void loop() {
   
-  ReadSensor1 = digitalRead(PIN_IFSENSOR1) == HIGH ? true : false;
-  ReadSensor2 = digitalRead(PIN_IFSENSOR2) == HIGH ? true : false;
+  ReadSensor_1 = digitalRead(PIN_IFSENSOR_1);
+  ReadSensor_2 = digitalRead(PIN_IFSENSOR_2);
+  ReadSensor_3 = digitalRead(PIN_IFSENSOR_3);
+  ReadSensor_4 = digitalRead(PIN_IFSENSOR_4);
 
-  ReadSensor1 ? motor1.Stop() : motor1.Forward();
-  ReadSensor2 ? motor2.Stop() : motor2.Forward();
+  if (!ReadSensor_1 && !ReadSensor_2){
+    Motor_1.Forward();
+    Motor_2.Forward();
+  }
+
 
 }
