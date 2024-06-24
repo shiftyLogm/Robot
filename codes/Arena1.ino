@@ -4,8 +4,8 @@
 #define PIN_MOTOR_2B 6
 #define PIN_IFSENSOR_1 7
 #define PIN_IFSENSOR_2 8
-#define PIN_IFSENSOR_3 
-#define PIN_IFSENSOR_4 
+#define PIN_IFSENSOR_3 12
+#define PIN_IFSENSOR_4 13
 
 bool ReadSensor_1;
 bool ReadSensor_2;
@@ -59,13 +59,17 @@ DCMotor Motor_1(PIN_MOTOR_1A, PIN_MOTOR_1B);
 DCMotor Motor_2(PIN_MOTOR_2A, PIN_MOTOR_2B);
 
 void turnLeft() {
-  Motor_1.Stop();
-  Motor_2.Forward();
+  while (ReadSensor_3) {
+    Motor_1.Stop();
+    Motor_2.Forward();
+  }
 }
 
 void turnRight() {
-  Motor_1.Forward();
-  Motor_2.Stop();
+  while (ReadSensor_4) {
+    Motor_1.Forward();
+    Motor_2.Stop();
+  }
 }
 
 void setup() {
@@ -91,5 +95,12 @@ void loop() {
     Motor_2.Forward();
   }
 
+  else if (ReadSensor_3){
+    turnLeft();
+  }
+
+  else if (ReadSensor_4){
+    turnRight();
+  }
 
 }
