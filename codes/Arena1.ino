@@ -1,7 +1,18 @@
-#define PIN_MOTOR_1A 10
-#define PIN_MOTOR_1B 11
-#define PIN_MOTOR_2A 5
-#define PIN_MOTOR_2B 6
+#include <Servo.h>
+
+#define PIN_MOTOR_1A 11
+#define PIN_MOTOR_1B 10
+#define PIN_MOTOR_2A 6
+#define PIN_MOTOR_2B 5
+// #define PIN_RIGHTSENSOR_1 7
+#define PIN_RIGHTSENSOR_2 8
+// #define PIN_LEFTSENSOR_1 12
+#define PIN_LEFTSENSOR_2 13
+
+// bool rightSensor_1;
+bool rightSensor_2;
+// bool leftSensor_1;
+bool leftSensor_2;
 
 class DCMotor {
   public:
@@ -46,6 +57,7 @@ class DCMotor {
     int _speed;
 };
 
+Servo servo_1;
 DCMotor motor_1(PIN_MOTOR_1A, PIN_MOTOR_1B);
 DCMotor motor_2(PIN_MOTOR_2A, PIN_MOTOR_2B);  
 
@@ -53,14 +65,23 @@ void setup(){
 
   motor_1.begin();
   motor_2.begin();
-  motor_1.setSpeed(80);
-  motor_2.setSpeed(80);
+  // pinMode(PIN_RIGHTSENSOR_1, INPUT);
+  pinMode(PIN_RIGHTSENSOR_2, INPUT);
+  // pinMode(PIN_LEFTSENSOR_1, INPUT);
+  pinMode(PIN_LEFTSENSOR_2, INPUT);
+  servo_1.attach(2);
 
 }
 
 void loop(){
 
-  motor_1.forward();
-  motor_2.forward();
-
+  // rightSensor_1 = digitalRead(PIN_RIGHTSENSOR_1);
+  rightSensor_2 = digitalRead(PIN_RIGHTSENSOR_2);
+  // leftSensor_1 = digitalRead(PIN_LEFTSENSOR_1);
+  leftSensor_2 = digitalRead(PIN_LEFTSENSOR_2);
+  Serial.println(rightSensor_2);
+  servo_1.write(0);
+  delay(2000);
+  servo_1.write(70);
+  delay(2000);
 }
