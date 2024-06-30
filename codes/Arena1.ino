@@ -58,58 +58,59 @@ class DCMotor {
 
 DCMotor motor_1(PIN_MOTOR_1A, PIN_MOTOR_1B);
 DCMotor motor_2(PIN_MOTOR_2A, PIN_MOTOR_2B);  
-// Servo servo_1;
+
+unsigned long previousMillis = 0;
+const unsigned long interval = 500;
+const unsigned long turnDelay = 1000;
 
 void setup(){
-
   motor_1.begin();
   motor_2.begin();
   pinMode(PIN_RIGHTSENSOR_1, INPUT);
   pinMode(PIN_RIGHTSENSOR_2, INPUT);
   pinMode(PIN_LEFTSENSOR_1, INPUT);
   pinMode(PIN_LEFTSENSOR_2, INPUT);
-  // servo_1.attach(2);
-
 }
 
 void loop(){
+
+  unsigned long currentMillis = millis();
 
   rightSensor_1 = digitalRead(PIN_RIGHTSENSOR_1);
   rightSensor_2 = digitalRead(PIN_RIGHTSENSOR_2);
   leftSensor_1 = digitalRead(PIN_LEFTSENSOR_1);
   leftSensor_2 = digitalRead(PIN_LEFTSENSOR_2);
-  // servo_1.write(0);
-  // delay(2000);
-  // servo_1.write(130);
-  // delay(2000);
+
   if(rightSensor_2 || leftSensor_2){
     motor_1.stop();
     motor_2.stop();
-    delay(100);
-    motor_1.backward();
-    motor_2.backward();
-    delay(100);
-    motor_1.stop();
-    motor_2.stop();
-    delay(500);
+    delay(800);
     if(!rightSensor_2 && leftSensor_2){
       motor_1.forward();
-      motor_1.setSpeed(100);
+      motor_1.setSpeed(60);
       motor_2.stop();
-      delay(300);
+      unsigned long turnStartTime = currentMillis;
+      
+      while (leftSensor_2 && currentMillis - turnStartTime < turnDelay) {
+        currentMillis = millis();
+      }
     }
     else if(rightSensor_2 && !leftSensor_2){
       motor_1.stop();
       motor_2.forward();
-      motor_2.setSpeed(100);
-      delay(300);
+      motor_2.setSpeed(60);
+      unsigned long turnStartTime = currentMillis;
+      
+      while (rightSensor_2 && currentMillis - turnStartTime < turnDelay) {
+        currentMillis = millis();
+      }
     }
     else if(rightSensor_2 && leftSensor_2){
       motor_1.forward();
       motor_2.forward();
-      delay(600);
       motor_1.setSpeed(60);
       motor_2.setSpeed(60);
+      delay(200);
     }
   }
   else{
