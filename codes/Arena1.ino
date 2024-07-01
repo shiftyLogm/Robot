@@ -1,3 +1,4 @@
+#include <Ultrasonic.h>
 #include <Servo.h>
 
 #define PIN_MOTOR_1A 9
@@ -8,11 +9,8 @@
 #define PIN_RIGHTSENSOR_2 8
 #define PIN_LEFTSENSOR_1 12
 #define PIN_LEFTSENSOR_2 13
-
-bool rightSensor_1;
-bool rightSensor_2;
-bool leftSensor_1;
-bool leftSensor_2;
+#define TRIGGER 3
+#define ECHO 2
 
 class DCMotor {
   public:
@@ -58,7 +56,17 @@ class DCMotor {
 
 DCMotor motor_1(PIN_MOTOR_1A, PIN_MOTOR_1B);
 DCMotor motor_2(PIN_MOTOR_2A, PIN_MOTOR_2B);  
+Ultrasonic ultSensor(TRIGGER, ECHO);
 
+bool rightSensor_1;
+bool rightSensor_2;
+bool leftSensor_1;
+bool leftSensor_2;
+bool hasBiff;
+bool hasObj;
+int ultSensor_Distance;
+int realDistance;
+int backMillis;
 unsigned long previousMillis = 0;
 const unsigned long interval = 500;
 const unsigned long turnDelay = 1000;
@@ -70,69 +78,92 @@ void setup(){
   pinMode(PIN_RIGHTSENSOR_2, INPUT);
   pinMode(PIN_LEFTSENSOR_1, INPUT);
   pinMode(PIN_LEFTSENSOR_2, INPUT);
+  motor_1.setSpeed(60);
+  motor_2.setSpeed(60);
+  motor_1.forward();
+  motor_2.forward();
+  hasBiff = false;
+  hasObj = false;
+  Serial.begin(9600);
 }
 
 void loop(){
-
   unsigned long currentMillis = millis();
+  
+  while(true){
+    ultSensor_Distance = ultSensor.read(CM);
+    rightSensor_1 = digitalRead(PIN_RIGHTSENSOR_1);
+    rightSensor_2 = digitalRead(PIN_RIGHTSENSOR_2);
+    leftSensor_1 = digitalRead(PIN_LEFTSENSOR_1);
+    leftSensor_2 = digitalRead(PIN_LEFTSENSOR_2);
 
-  rightSensor_1 = digitalRead(PIN_RIGHTSENSOR_1);
-  rightSensor_2 = digitalRead(PIN_RIGHTSENSOR_2);
-  leftSensor_1 = digitalRead(PIN_LEFTSENSOR_1);
-  leftSensor_2 = digitalRead(PIN_LEFTSENSOR_2);
+    if(ultSensor_Distance <= 15 && (!rightSensor_2 || !leftSensor_2)){
+      if((rightSensor_2 || leftSensor_2) && !hasBiff){
+        hasBiff = true;
+        backMillis = currentMillis;
+      }
+      hasObj = true;
+      motor_1.forward();
+      motor_2.forward();
+      motor_1.setSpeed(60);
+      motor_2.setSpeed(60);
+      Serial.println("asd");
+    }
+    if((ultSensor_Distance <= 15 && (rightSensor_2 && leftSensor_2)) && !hasBiff){
+      motor_1.stop();
+      motor_2.stop();
+      break;
+    }
+    if((rightSensor_2 && leftSensor_2) && hasBiff){
+        while((backMillis + 150) > 0){
+          motor_1.backward();
+          motor_2.backward();
+          backMillis -= 1;
+        }
+        hasBiff = false;
+      }
+    
 
-  if(rightSensor_2 || leftSensor_2){
-    motor_1.stop();
-    motor_2.stop();
-    delay(800);
+    if(hasObj){
+      return;
+    }
+    if(rightSensor_2 || leftSensor_2){
+      motor_1.stop();
+      motor_2.stop();
+      delay(500);
+    }
     if(!rightSensor_2 && leftSensor_2){
+      motor_2.stop();
       motor_1.forward();
       motor_1.setSpeed(60);
-      motor_2.stop();
-      unsigned long turnStartTime = currentMillis;
-      
-      while (leftSensor_2 && currentMillis - turnStartTime < turnDelay) {
-        currentMillis = millis();
-      }
+      delay(200);
     }
     else if(rightSensor_2 && !leftSensor_2){
       motor_1.stop();
       motor_2.forward();
       motor_2.setSpeed(60);
-      unsigned long turnStartTime = currentMillis;
-      
-      while (rightSensor_2 && currentMillis - turnStartTime < turnDelay) {
-        currentMillis = millis();
-      }
-    }
-    else if(rightSensor_2 && leftSensor_2){
-      motor_1.forward();
-      motor_2.forward();
-      motor_1.setSpeed(60);
-      motor_2.setSpeed(60);
       delay(200);
     }
-  }
-  else{
-    motor_1.setSpeed(60);
-    motor_2.setSpeed(60);
-    
-    if(!rightSensor_1){
-      motor_1.forward();
-    }
     else{
-      motor_1.stop();
-    }
-    if(!leftSensor_1){
-      motor_2.forward();
-    }
-    else{
-      motor_2.stop();
-    }
-
-    if(leftSensor_1 && rightSensor_1){
-      motor_1.forward();
-      motor_2.forward();
+      if(!rightSensor_1 && leftSensor_1){
+        motor_1.forward();
+        motor_2.forward();
+        motor_1.setSpeed(50);
+        motor_2.setSpeed(0);
+      }
+      else if(rightSensor_1 && !leftSensor_1){
+        motor_1.forward();
+        motor_2.forward();
+        motor_2.setSpeed(50);
+        motor_1.setSpeed(0);
+      }
+      else if(!rightSensor_1 && !leftSensor_1){
+        motor_1.forward();
+        motor_2.forward();
+        motor_2.setSpeed(50);
+        motor_1.setSpeed(50);
+      }
     }
   }
 }
+
