@@ -11,6 +11,8 @@
 #define PIN_LEFTSENSOR_2 13
 #define TRIGGER 3
 #define ECHO 2
+#define SERVO_DEGREE 4
+#define SERVO_CLAW 11
 
 class DCMotor {
   public:
