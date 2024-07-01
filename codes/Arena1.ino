@@ -59,6 +59,8 @@ class DCMotor {
 DCMotor motor_1(PIN_MOTOR_1A, PIN_MOTOR_1B);
 DCMotor motor_2(PIN_MOTOR_2A, PIN_MOTOR_2B);  
 Ultrasonic ultSensor(TRIGGER, ECHO);
+Servo servo_degree;
+Servo servo_claw;
 
 bool rightSensor_1;
 bool rightSensor_2;
@@ -86,6 +88,8 @@ void setup(){
   motor_2.forward();
   hasBiff = false;
   hasObj = false;
+  servo_degree.attach(SERVO_DEGREE);
+  servo_claw.attach(SERVO_CLAW);
   Serial.begin(9600);
 }
 
