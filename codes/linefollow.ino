@@ -1,5 +1,5 @@
-#define PIN_MOTOR_1A 13
-#define PIN_MOTOR_1B 12
+#define PIN_MOTOR_1A 6
+#define PIN_MOTOR_1B 5
 #define PIN_MOTOR_2A 11
 #define PIN_MOTOR_2B 10
 #define PIN_RIGHTSENSOR 9
@@ -64,25 +64,13 @@ void setup() {
 
 void loop() {
 
-  motor_1.setSpeed(60);
-  motor_2.setSpeed(60);
+  motor_1.setSpeed(70);
+  motor_2.setSpeed(70);
 
   rightSensor = digitalRead(PIN_RIGHTSENSOR);
   leftSensor = digitalRead(PIN_LEFTSENSOR);
 
-  if (!leftSensor && !rightSensor) {
-    motor_1.forward();
-    motor_2.forward();
-  }
-  else {
-    if (rightSensor) {
-      motor_1.stop();
-      motor_2.forward();
-    }
+  motor_1.forward();
+  motor_2.forward();
 
-    if (leftSensor) {
-      motor_1.forward();
-      motor_2.stop();
-    }
-  }
 }
