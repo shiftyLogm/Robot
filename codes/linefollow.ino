@@ -1,8 +1,9 @@
 #define PIN_MOTOR_1A 6
 #define PIN_MOTOR_1B 5
-#define PIN_MOTOR_2A 11
-#define PIN_MOTOR_2B 10
-#define PIN_RIGHTSENSOR 9
+#define PIN_MOTOR_2A 10
+#define PIN_MOTOR_2B 11
+
+#define PIN_RIGHTSENSOR 2
 #define PIN_LEFTSENSOR 8
 
 class DCMotor {
@@ -65,12 +66,13 @@ void setup() {
 void loop() {
 
   motor_1.setSpeed(70);
+  
   motor_2.setSpeed(70);
 
   rightSensor = digitalRead(PIN_RIGHTSENSOR);
   leftSensor = digitalRead(PIN_LEFTSENSOR);
 
-  motor_1.forward();
-  motor_2.forward();
+  leftSensor ? motor_1.forward() : motor_1.stop();
+  rightSensor ? motor_2.forward() : motor_2.stop();
 
 }
